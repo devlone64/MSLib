@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.devlone64"
-version = "1.0.0"
+version = "1.0.1"
 
 dependencies {
     implementation("com.zaxxer", "HikariCP", "5.0.1")
@@ -39,6 +39,8 @@ dependencies {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+    java.sourceCompatibility = JavaVersion.VERSION_17
+    java.targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.shadowJar {
@@ -53,11 +55,14 @@ tasks.withType<ProcessResources> {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("release") {
-            artifactId = "MSLib"
-            from(components["java"])
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                groupId = "com.github.devlone64"
+                artifactId = "MSLib"
+                from(components["java"])
+            }
         }
     }
 }
