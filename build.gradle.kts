@@ -11,15 +11,6 @@ plugins {
 group = "dev.lone64.mslib"
 version = "1.0.0"
 
-repositories {
-    mavenCentral()
-    maven("https://jitpack.io")
-    maven("https://libraries.minecraft.net/")
-    maven("https://repo.codemc.io/repository/maven-public/")
-    maven("https://repo.codemc.io/repository/maven-snapshots/")
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-}
-
 dependencies {
     implementation("com.zaxxer", "HikariCP", "5.0.1")
     implementation("org.atteo.classindex", "classindex", "3.13")
@@ -62,15 +53,12 @@ tasks.withType<ProcessResources> {
     }
 }
 
-/*
 publishing {
     publications {
-        register<MavenPublication>("release") {
-            afterEvaluate {
-                from(components["release"])
-                groupId = "com.github.devlone64"
-                artifactId = "MSLib"
-            }
+        create<MavenPublication>("release") {
+            groupId = "com.github.devlone64"
+            artifactId = "MSLib"
+            from(components["java"])
         }
     }
-}*/
+}
