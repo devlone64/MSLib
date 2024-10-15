@@ -1,4 +1,4 @@
-package io.github.devlone64.MSLib.command.impl.custom.manager;
+package io.github.devlone64.MSLib.command.manager;
 
 import io.github.devlone64.MSLib.command.BaseCommand;
 import io.github.devlone64.MSLib.command.LoadCommand;
@@ -8,26 +8,28 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class CommandManager {
 
     private final JavaPlugin plugin;
-    private final List<LoadCommand> commands = new ArrayList<>();
+    private final Map<Class<? extends BaseCommand>, LoadCommand> commands = new HashMap<>();
 
     public CommandManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public void spigots(List<BaseCommand> commands) {
+    public void spigots(BaseCommand... commands) {
         for (BaseCommand command : commands) {
             LoadCommand loadCommand = new LoadCommand(plugin, command);
-            this.commands.add(loadCommand);
+            this.commands.put(command.getClass(), loadCommand);
         }
     }
 
-    public void customs(List<BaseCommand> commands) {
+    public void customs(BaseCommand... commands) {
         for (BaseCommand command : commands) {
             try {
                 LoadCommand loadCommand;
@@ -35,7 +37,7 @@ public class CommandManager {
                 bukkitCommandMap.setAccessible(true);
                 org.bukkit.command.CommandMap cmap = (org.bukkit.command.CommandMap) bukkitCommandMap.get(Bukkit.getServer());
                 cmap.register(plugin.getName(), new CustomCommand(plugin, loadCommand = new LoadCommand(plugin, command)));
-                this.commands.add(loadCommand);
+                this.commands.put(command.getClass(), loadCommand);
             } catch (Exception ignored) { }
         }
     }

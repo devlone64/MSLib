@@ -1,13 +1,13 @@
 package io.github.devlone64.MSLib.command;
 
-import io.github.devlone64.MSLib.command.data.CommandType;
+import io.github.devlone64.MSLib.command.data.SenderType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public interface BaseCommand {
-    CommandType getCommandType();
+    SenderType getSenderType();
 
     default String getConsoleMessage() { return "&c해당 명령어는 콘솔에서 사용할 수 없습니다."; }
 

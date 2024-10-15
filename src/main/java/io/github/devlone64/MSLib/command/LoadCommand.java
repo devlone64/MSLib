@@ -1,6 +1,7 @@
 package io.github.devlone64.MSLib.command;
 
 import io.github.devlone64.MSLib.command.annotation.CommandInfo;
+import io.github.devlone64.MSLib.command.data.Types;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,6 +19,8 @@ public class LoadCommand {
     private String usage;
     private String prefix;
     private String description;
+
+    private Types type;
 
     private String permission;
     private String permissionMessage;
@@ -37,6 +40,8 @@ public class LoadCommand {
             this.prefix = commandInfo.prefix();
             this.description = commandInfo.description();
             this.aliases = List.of(commandInfo.aliases());
+
+            this.type = commandInfo.type();
 
             this.permission = command.getPermissionNode();
             this.permissionMessage = command.getPermissionMessage();

@@ -6,11 +6,9 @@ import io.github.devlone64.MSLib.builder.inventory.event.ClickEvent;
 import io.github.devlone64.MSLib.builder.inventory.event.CloseEvent;
 import io.github.devlone64.MSLib.builder.inventory.impl.BukkitInventory;
 import io.github.devlone64.MSLib.builder.inventory.impl.CustomInventory;
-import io.github.devlone64.MSLib.command.BaseCommand;
 import io.github.devlone64.MSLib.command.LoadCommand;
-import io.github.devlone64.MSLib.command.data.Types;
-import io.github.devlone64.MSLib.command.impl.custom.manager.CommandManager;
-import io.github.devlone64.MSLib.spigot.MCScheduler;
+import io.github.devlone64.MSLib.command.manager.CommandManager;
+import io.github.devlone64.MSLib.spigot.Spigot;
 import io.github.devlone64.MSLib.util.Console;
 import io.github.devlone64.MSLib.util.message.Component;
 import io.github.devlone64.MSLib.util.version.VersionUtil;
@@ -28,10 +26,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.List;
 
 @Getter
 public class MSPlugin extends JavaPlugin implements Listener {
@@ -62,6 +57,7 @@ public class MSPlugin extends JavaPlugin implements Listener {
             return;
         }
 
+        Spigot.register(this);
         onStart();
     }
 
@@ -74,30 +70,6 @@ public class MSPlugin extends JavaPlugin implements Listener {
     public void onStart() { }
     public void onStop() { }
 
-    public void registerPermission(Permission permission) {
-        Bukkit.getPluginManager().addPermission(permission);
-    }
-
-    public void registerCommands(Types types, BaseCommand... commands) {
-        registerCommands(types, List.of(commands));
-    }
-
-    public void registerListeners(Listener... listeners) {
-        registerListeners(List.of(listeners));
-    }
-
-    public void registerCommands(Types types, List<BaseCommand> commands) {
-        if (types == Types.BUKKIT) {
-            getCommandManager().spigots(commands);
-        } else if (types == Types.CUSTOM) {
-            getCommandManager().customs(commands);
-        }
-    }
-
-    public void registerListeners(List<Listener> listeners) {
-        listeners.forEach(listener -> Bukkit.getPluginManager().registerEvents(listener, this));
-    }
-
     @EventHandler(priority= EventPriority.HIGH, ignoreCancelled=true)
     public void onPlayerQuit(PlayerQuitEvent event) {
         if (InputBuilder.is(event.getPlayer())) {
@@ -108,7 +80,7 @@ public class MSPlugin extends JavaPlugin implements Listener {
     @EventHandler(priority= EventPriority.HIGH, ignoreCancelled=true)
     public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        for (LoadCommand mapper : getCommandManager().getCommands()) {
+        for (LoadCommand mapper : getCommandManager().getCommands().values()) {
             if (mapper.getName() != null && mapper.getName().toLowerCase().contains(event.getMessage().replace("/", ""))) {
                 if (mapper.getPermission() == null || mapper.getPermission().isEmpty()) return;
                 if (!player.hasPermission(mapper.getPermission())) {
@@ -125,7 +97,7 @@ public class MSPlugin extends JavaPlugin implements Listener {
         if (InputBuilder.is(event.getPlayer())) {
             event.setCancelled(true);
             if (listener.onInit(event.getPlayer(), event.getMessage())) {
-                MCScheduler.sync(() -> InputBuilder.remove(event.getPlayer()));
+                Spigot.sync(() -> InputBuilder.remove(event.getPlayer()));
             }
         }
     }

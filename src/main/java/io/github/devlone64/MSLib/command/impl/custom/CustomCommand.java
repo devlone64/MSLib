@@ -1,7 +1,7 @@
 package io.github.devlone64.MSLib.command.impl.custom;
 
 import io.github.devlone64.MSLib.command.LoadCommand;
-import io.github.devlone64.MSLib.command.data.CommandType;
+import io.github.devlone64.MSLib.command.data.SenderType;
 import io.github.devlone64.MSLib.util.message.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -35,9 +35,9 @@ public class CustomCommand extends org.bukkit.command.defaults.BukkitCommand {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String arg, @NotNull String[] args) {
-        if (this.mapper.getCommand().getCommandType() == CommandType.CONSOLE)
+        if (this.mapper.getCommand().getSenderType() == SenderType.CONSOLE)
             return mapper.getCommand().perform(sender, args);
-        else if (this.mapper.getCommand().getCommandType() == CommandType.PLAYER) {
+        else if (this.mapper.getCommand().getSenderType() == SenderType.PLAYER) {
             if (sender instanceof ConsoleCommandSender) {
                 sender.sendMessage(Component.from(this.mapper.getPrefix() + this.mapper.getConsoleMessage()));
                 return true;
@@ -50,9 +50,9 @@ public class CustomCommand extends org.bukkit.command.defaults.BukkitCommand {
     @NotNull
     @Override
     public List<String> tabComplete(@NotNull CommandSender sender, @NotNull String arg, String[] args) {
-        if (this.mapper.getCommand().getCommandType() == CommandType.CONSOLE)
+        if (this.mapper.getCommand().getSenderType() == SenderType.CONSOLE)
             return mapper.getCommand().complete(sender, args);
-        else if (this.mapper.getCommand().getCommandType() == CommandType.PLAYER) {
+        else if (this.mapper.getCommand().getSenderType() == SenderType.PLAYER) {
             if (sender instanceof ConsoleCommandSender) return List.of();
             return mapper.getCommand().complete((Player) sender, args);
         }
