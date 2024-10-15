@@ -1,13 +1,24 @@
 @file:Suppress("SpellCheckingInspection")
 
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     id("java")
     id("java-library")
-    id("maven-publish")
+    id("com.vanniktech.maven.publish").version("0.29.0")
 }
 
 group = "com.github.devlone64"
-version = "1.0.0"
+version = "1.0.1"
+
+repositories {
+    mavenCentral()
+    maven("https://jitpack.io")
+    maven("https://libraries.minecraft.net/")
+    maven("https://repo.codemc.io/repository/maven-public/")
+    maven("https://repo.codemc.io/repository/maven-snapshots/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+}
 
 dependencies {
     implementation("com.zaxxer", "HikariCP", "5.0.1")
@@ -41,15 +52,40 @@ tasks.withType<JavaCompile> {
     java.targetCompatibility = JavaVersion.VERSION_17
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
+tasks.withType<Javadoc> {
+    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+    (options as StandardJavadocDocletOptions).addStringOption("encoding", "UTF-8")
+    (options as StandardJavadocDocletOptions).addStringOption("charSet", "UTF-8")
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+
+    coordinates("io.github.devlone64", "MSLib", "$version")
+
+    pom {
+        name = "MSLib"
+        description = "The minecraft plugin utilities and libraries."
+        url = "https://github.com/devlone64/MSLib"
+        inceptionYear = "2024"
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+        developers {
+            developer {
+                id = "devlone64"
+                name = "lone64"
+                url = "https://github.com/devlone64"
+            }
+        }
+        scm {
+            url.set("https://github.com/devlone64/MSLib")
+            connection.set("scm:git:git://github.com/devlone64/MSLib.git")
+            developerConnection.set("scm:git:ssh://git@github.com/devlone64/MSLib.git")
         }
     }
 }
