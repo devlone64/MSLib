@@ -8,7 +8,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-group = "dev.lone64.mslib"
+group = "com.github.devlone64"
 version = "1.0.0"
 
 dependencies {
@@ -56,7 +56,6 @@ tasks.withType<ProcessResources> {
 publishing {
     publications {
         create<MavenPublication>("release") {
-            groupId = "com.github.devlone64"
             artifactId = "MSLib"
             from(components["java"])
         }
