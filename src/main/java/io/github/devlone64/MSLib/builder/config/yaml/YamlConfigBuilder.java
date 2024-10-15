@@ -27,7 +27,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
     public YamlConfigBuilder(MSPlugin plugin, String dir, String name) {
         this.firstTime = false;
 
-        File directory = new File(dir);
+        File directory = new File(plugin.getDataFolder(), dir);
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
                 MSLib.getLogger().severe("Cloud not create %s".formatted(directory.getPath()));

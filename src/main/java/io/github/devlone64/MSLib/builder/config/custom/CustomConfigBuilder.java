@@ -96,6 +96,11 @@ public class CustomConfigBuilder implements ConfigBuilderProvider {
         load();
     }
 
+    public CustomConfigBuilder add(String path, Object value) {
+        if (!is(path)) set(path, value);
+        return this;
+    }
+
     public CustomConfigBuilder set(String path, Object value) {
         setInternal(path, value);
         return this;
