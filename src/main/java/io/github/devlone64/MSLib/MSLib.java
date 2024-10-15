@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 public class MSLib {
 
     public static MSPlugin getInstance() {
-        return MSPlugin.getPlugin(MSPlugin.class);
+        return MSPlugin.INSTANCE;
     }
 
     public static Logger getLogger() {
