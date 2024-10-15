@@ -1,7 +1,6 @@
 package com.github.devlone64.MSLib.util.color;
 
 import com.google.common.collect.ImmutableMap;
-import dev.lone64.mslib.framework.util.color.pattern.*;
 import com.github.devlone64.MSLib.util.color.pattern.GradientPattern;
 import com.github.devlone64.MSLib.util.color.pattern.RainbowPattern;
 import com.github.devlone64.MSLib.util.color.pattern.SolidPattern;

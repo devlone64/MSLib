@@ -1,15 +1,13 @@
 @file:Suppress("SpellCheckingInspection")
 
-import org.apache.tools.ant.filters.ReplaceTokens
-
 plugins {
-    java
+    id("java")
+    id("java-library")
     id("maven-publish")
-    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "com.github.devlone64"
-version = "1.0.1"
+version = "1.0.0"
 
 dependencies {
     implementation("com.zaxxer", "HikariCP", "5.0.1")
@@ -43,26 +41,15 @@ tasks.withType<JavaCompile> {
     java.targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.shadowJar {
-    archiveFileName.set("MSLib-${version}.jar")
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
-tasks.withType<ProcessResources> {
-    from("src/main/resources") {
-        include("plugin.yml")
-        filter<ReplaceTokens>("tokens" to mapOf("version" to project.version))
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    }
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                groupId = "com.github.devlone64"
-                artifactId = "MSLib"
-                from(components["java"])
-            }
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
         }
     }
 }
