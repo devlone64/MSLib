@@ -29,7 +29,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         File dataFolder = plugin.getDataFolder();
         if (!dataFolder.exists()) {
             if (!dataFolder.mkdirs()) {
-                MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(dataFolder.getPath()));
+                MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(dataFolder.getPath()));
                 return;
             }
         }
@@ -37,14 +37,14 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         this.config = new File(dataFolder, name);
         if (!this.config.exists()) {
             this.firstTime = true;
-            MSPlugin.INSTANCE.getLogger().info("Creating %s".formatted(this.config.getPath()));
+            MSPlugin.LOGGER.info("Creating to '%s'".formatted(this.config.getPath()));
             try {
                 if (!this.config.createNewFile()) {
-                    MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(this.config.getPath()));
+                    MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(this.config.getPath()));
                     return;
                 }
             } catch (IOException e) {
-                MSPlugin.INSTANCE.getLogger().severe(e.getMessage());
+                MSPlugin.LOGGER.severe(e.getMessage());
             }
         }
 
@@ -59,7 +59,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         File dataFolder = plugin.getDataFolder();
         if (!dataFolder.exists()) {
             if (!dataFolder.mkdirs()) {
-                MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(dataFolder.getPath()));
+                MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(dataFolder.getPath()));
                 return;
             }
         }
@@ -67,7 +67,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         File directory = new File(plugin.getDataFolder(), dir);
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
-                MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(directory.getPath()));
+                MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(directory.getPath()));
                 return;
             }
         }
@@ -75,14 +75,14 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         this.config = new File(dir, name);
         if (!this.config.exists()) {
             this.firstTime = true;
-            MSPlugin.INSTANCE.getLogger().info("Creating %s".formatted(this.config.getPath()));
+            MSPlugin.LOGGER.info("Creating to '%s'".formatted(this.config.getPath()));
             try {
                 if (!this.config.createNewFile()) {
-                    MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(this.config.getPath()));
+                    MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(this.config.getPath()));
                     return;
                 }
             } catch (IOException e) {
-                MSPlugin.INSTANCE.getLogger().severe(e.getMessage());
+                MSPlugin.LOGGER.severe(e.getMessage());
             }
         }
 
@@ -95,7 +95,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         try {
             this.yml.save(this.config);
         } catch (IOException e) {
-            MSPlugin.INSTANCE.getLogger().severe(e.getMessage());
+            MSPlugin.LOGGER.severe(e.getMessage());
         }
     }
 

@@ -1,5 +1,6 @@
 package io.github.devlone64.MSLib.util.file;
 
+import io.github.devlone64.MSLib.MSPlugin;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,7 +16,11 @@ public class FileUtil {
     public static boolean createFile(JavaPlugin plugin, String name) {
         try {
             File folder = plugin.getDataFolder();
-            if (!folder.exists()) folder.mkdir();
+            if (!folder.exists()) {
+                if (!folder.mkdir()) {
+                    MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(folder.getPath()));
+                }
+            }
 
             File file = new File(plugin.getDataFolder(), name.replace(plugin.getDataFolder().getPath() + "\\", ""));
             if (file.exists()) return false;

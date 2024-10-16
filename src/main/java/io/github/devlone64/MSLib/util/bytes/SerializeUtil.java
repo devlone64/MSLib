@@ -13,7 +13,7 @@ public class SerializeUtil {
         try (ObjectOutputStream objStream = new ObjectOutputStream(byteStream)) {
             objStream.writeObject(item);
         } catch (IOException e) {
-            MSPlugin.INSTANCE.getLogger().warning(e.getMessage());
+            MSPlugin.LOGGER.warning(e.getMessage());
         }
         return byteStream.toByteArray();
     }
@@ -23,7 +23,7 @@ public class SerializeUtil {
         try (ObjectInputStream objStream = new ObjectInputStream(byteStream)) {
             return (T) objStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            MSPlugin.INSTANCE.getLogger().warning(e.getMessage());
+            MSPlugin.LOGGER.warning(e.getMessage());
         }
         return null;
     }
@@ -33,7 +33,7 @@ public class SerializeUtil {
         try (ObjectInputStream objStream = new ObjectInputStream(byteStream)) {
             return (List<T>) objStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            MSPlugin.INSTANCE.getLogger().warning(e.getMessage());
+            MSPlugin.LOGGER.warning(e.getMessage());
         }
         return new ArrayList<>();
     }
