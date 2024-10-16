@@ -11,18 +11,18 @@
 <dependency>
     <groupId>io.github.devlone64</groupId>
     <artifactId>MSLib</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
 #### Gradle
 ```Groovy
-implementation 'io.github.devlone64:MSLib:1.0.5'
+implementation 'io.github.devlone64:MSLib:1.0.6'
 ```
 
 #### Gradle Kotlin
 ```kotlin
-implementation("io.github.devlone64:MSLib:1.0.5")
+implementation("io.github.devlone64:MSLib:1.0.6")
 ```
 
 <br>

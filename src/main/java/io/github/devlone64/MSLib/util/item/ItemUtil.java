@@ -151,11 +151,13 @@ public class ItemUtil {
             return false;
         ItemMeta oneMeta = first.getItemMeta();
         ItemMeta twoMeta = twice.getItemMeta();
-        return (first.getType() == twice.getType()
-                && first.getAmount() == twice.getAmount())
-                || (oneMeta != null && twoMeta != null
-                && oneMeta.hasDisplayName() && twoMeta.hasDisplayName()
-                && oneMeta.getDisplayName().equalsIgnoreCase(twoMeta.getDisplayName()));
+        if (oneMeta != null && twoMeta != null) {
+            if (oneMeta.hasDisplayName() && twoMeta.hasDisplayName()) {
+                return first.getType() == twice.getType() && first.getAmount() == twice.getAmount()
+                        && oneMeta.getDisplayName().equalsIgnoreCase(twoMeta.getDisplayName());
+            }
+        }
+        return first.getType() == twice.getType() && first.getAmount() == twice.getAmount();
     }
 
     public enum Locale {
