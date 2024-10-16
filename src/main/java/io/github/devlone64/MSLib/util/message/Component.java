@@ -23,6 +23,15 @@ public class Component {
         return null;
     }
 
+    public static List<String> fromList(ConfigBuilderProvider config, String path) {
+        if (config instanceof CustomConfigBuilder c) {
+            return from(c.getList(path));
+        } else if (config instanceof YamlConfigBuilder c) {
+            return from(c.getStringList(path));
+        }
+        return null;
+    }
+
     public static String from(String message) {
         if (NmsVersion.getCurrentVersion().isGradientVersion())
             return ColorUtil.format(ChatColor.translateAlternateColorCodes('&', getHexColor(message)));
