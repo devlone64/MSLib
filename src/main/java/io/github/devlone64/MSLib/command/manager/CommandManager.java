@@ -1,46 +1,71 @@
 package io.github.devlone64.MSLib.command.manager;
 
+import io.github.devlone64.MSLib.MSPlugin;
 import io.github.devlone64.MSLib.command.BaseCommand;
-import io.github.devlone64.MSLib.command.LoadCommand;
-import io.github.devlone64.MSLib.command.impl.custom.CustomCommand;
+import io.github.devlone64.MSLib.command.data.CommandData;
+import io.github.devlone64.MSLib.command.data.LoaderType;
+import io.github.devlone64.MSLib.command.executor.PaperExecutor;
+import io.github.devlone64.MSLib.command.executor.SpigotExecutor;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.command.CommandMap;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
+@AllArgsConstructor
 public class CommandManager {
 
-    private final JavaPlugin plugin;
-    private final Map<Class<? extends BaseCommand>, LoadCommand> commands = new HashMap<>();
+    private final List<CommandData> commandDataList = new ArrayList<>();
+    private final MSPlugin plugin;
 
-    public CommandManager(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
-
-    public void spigots(BaseCommand... commands) {
-        for (BaseCommand command : commands) {
-            this.commands.put(command.getClass(), new LoadCommand(plugin, command));
+    public void register(BaseCommand... commands) {
+        for (var cmd : commands) {
+            var commandData = new CommandData(getPlugin(), cmd);
+            if (commandData.getLoaderType() == LoaderType.SPIGOT) {
+                addSpigot(commandData);
+            } else if (commandData.getLoaderType() == LoaderType.PAPER) {
+                addPaper(commandData);
+            }
         }
     }
 
-    public void customs(BaseCommand... commands) {
-        for (BaseCommand command : commands) {
-            try {
-                LoadCommand loadCommand;
-                java.lang.reflect.Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-                bukkitCommandMap.setAccessible(true);
-                org.bukkit.command.CommandMap cmap = (org.bukkit.command.CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-                cmap.register(plugin.getName(), new CustomCommand(plugin, loadCommand = new LoadCommand(plugin, command)));
-                this.commands.put(command.getClass(), loadCommand);
-            } catch (Exception ignored) { }
+    public void register(List<BaseCommand> commands) {
+        register(commands.toArray(new BaseCommand[0]));
+    }
+
+    private void addSpigot(CommandData commandData) {
+        var command = getPlugin().getCommand(commandData.getName());
+        if (command != null) {
+            command.setExecutor(new SpigotExecutor(commandData));
+            command.setTabCompleter(new SpigotExecutor(commandData));
+
+            command.setName(commandData.getName());
+            command.setUsage(commandData.getUsage());
+            command.setDescription(commandData.getComment());
+            command.setAliases(commandData.getAliases());
+            command.setPermission(commandData.getPermissionNode());
         }
     }
 
-    public LoadCommand getCommand(Class<? extends BaseCommand> commandClass) {
-        return commands.get(commandClass);
+    private void addPaper(CommandData commandData) {
+        try {
+            var field = getField("commandMap");
+            field.setAccessible(true);
+
+            var commandMap = (CommandMap) field.get(Bukkit.getServer());
+            commandMap.register(getPlugin().getName(), new PaperExecutor(commandData));
+            getCommandDataList().add(commandData);
+        } catch (Exception e) {
+            getPlugin().getLogger().severe(e.getMessage());
+        }
+    }
+
+    private Field getField(String name) throws NoSuchFieldException {
+        return getPlugin().getServer().getClass().getDeclaredField("commandMap");
     }
 
 }

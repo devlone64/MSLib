@@ -1,10 +1,8 @@
 package io.github.devlone64.MSLib;
 
 import io.github.devlone64.MSLib.builder.input.InputBuilder;
-import io.github.devlone64.MSLib.builder.input.listener.InputListener;
 import io.github.devlone64.MSLib.builder.inventory.impl.BukkitInventory;
 import io.github.devlone64.MSLib.builder.inventory.impl.CustomInventory;
-import io.github.devlone64.MSLib.command.LoadCommand;
 import io.github.devlone64.MSLib.command.manager.CommandManager;
 import io.github.devlone64.MSLib.spigot.Spigot;
 import io.github.devlone64.MSLib.util.Console;
@@ -12,7 +10,6 @@ import io.github.devlone64.MSLib.util.message.Component;
 import io.github.devlone64.MSLib.util.version.VersionUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,19 +23,23 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
 @Getter
 public class MSPlugin extends JavaPlugin implements Listener {
 
     public static String PREFIX;
+
+    public static Logger LOGGER;
     public static MSPlugin INSTANCE;
 
-    private final CommandManager commandManager;
+    private final CommandManager commandManager = new CommandManager(this);
 
     public MSPlugin() {
-        PREFIX = Component.from("<GRADIENT:FF9633>%s</GRADIENT:FFD633>&r".formatted(getName()));
         INSTANCE = this;
+        LOGGER = getLogger();
 
-        this.commandManager = new CommandManager(this);
+        PREFIX = Component.from("<GRADIENT:FF9633>%s</GRADIENT:FFD633>&r".formatted(getName()));
     }
 
     @Override
@@ -79,13 +80,14 @@ public class MSPlugin extends JavaPlugin implements Listener {
 
     @EventHandler(priority= EventPriority.HIGH, ignoreCancelled=true)
     public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        Player player = event.getPlayer();
-        for (LoadCommand mapper : getCommandManager().getCommands().values()) {
-            if (mapper.getName() != null && mapper.getName().toLowerCase().contains(event.getMessage().replace("/", ""))) {
-                if (mapper.getPermission() == null || mapper.getPermission().isEmpty()) return;
-                if (!player.hasPermission(mapper.getPermission())) {
-                    event.setCancelled(true);
-                    player.sendMessage(Component.from(mapper.getPrefix() + mapper.getPermissionMessage()));
+        var player = event.getPlayer();
+        for (var commandData : getCommandManager().getCommandDataList()) {
+            if (commandData.getName() != null && commandData.getName().toLowerCase().contains(event.getMessage().replace("/", ""))) {
+                if (commandData.getPermissionNode() != null && !commandData.getPermissionNode().isEmpty()) {
+                    if (!player.hasPermission(commandData.getPermissionMessage())) {
+                        event.setCancelled(true);
+                        player.sendMessage(Component.from(commandData.getPermissionMessage()));
+                    }
                 }
             }
         }
@@ -93,7 +95,7 @@ public class MSPlugin extends JavaPlugin implements Listener {
 
     @EventHandler(priority= EventPriority.HIGH, ignoreCancelled=true)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        InputListener listener = InputBuilder.get(event.getPlayer());
+        var listener = InputBuilder.get(event.getPlayer());
         if (InputBuilder.is(event.getPlayer())) {
             event.setCancelled(true);
             if (listener.onInit(event.getPlayer(), event.getMessage())) {
@@ -104,9 +106,9 @@ public class MSPlugin extends JavaPlugin implements Listener {
 
     @EventHandler(priority= EventPriority.HIGH, ignoreCancelled=true)
     public void onPlayerMove(PlayerMoveEvent event) {
-        InputListener listener = InputBuilder.get(event.getPlayer());
+        var listener = InputBuilder.get(event.getPlayer());
         if (InputBuilder.is(event.getPlayer())) {
-            Location location = event.getPlayer().getLocation().clone().subtract(0, 1, 0);
+            var location = event.getPlayer().getLocation().clone().subtract(0, 1, 0);
             if (location.getBlock().getType() == Material.AIR && listener.onCancel(event.getPlayer())) {
                 InputBuilder.remove(event.getPlayer());
             }

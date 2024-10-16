@@ -2,11 +2,7 @@ package io.github.devlone64.MSLib.spigot;
 
 import io.github.devlone64.MSLib.MSPlugin;
 import io.github.devlone64.MSLib.command.BaseCommand;
-import io.github.devlone64.MSLib.command.LoadCommand;
-import io.github.devlone64.MSLib.command.data.Types;
-import io.github.devlone64.MSLib.command.impl.bukkit.NormalCommand;
 import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.ServicePriority;
@@ -15,21 +11,7 @@ import org.bukkit.scheduler.BukkitTask;
 public class Spigot {
 
     public static void register(BaseCommand... commands) {
-        for (BaseCommand command : commands) {
-            LoadCommand loadCommand = MSPlugin.INSTANCE.getCommandManager().getCommand(command.getClass());
-            if (loadCommand != null) {
-                if (loadCommand.getType() == Types.SPIGOT) {
-                    MSPlugin.INSTANCE.getCommandManager().spigots(command);
-                    PluginCommand cmd = MSPlugin.INSTANCE.getCommand(loadCommand.getName());
-                    if (cmd != null) {
-                        cmd.setExecutor(new NormalCommand(loadCommand));
-                        cmd.setTabCompleter(new NormalCommand(loadCommand));
-                    }
-                } else {
-                    MSPlugin.INSTANCE.getCommandManager().customs(command);
-                }
-            }
-        }
+        MSPlugin.INSTANCE.getCommandManager().register(commands);
     }
 
     public static void register(Listener... listeners) {
