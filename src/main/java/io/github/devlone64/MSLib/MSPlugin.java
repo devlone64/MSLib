@@ -2,8 +2,6 @@ package io.github.devlone64.MSLib;
 
 import io.github.devlone64.MSLib.builder.input.InputBuilder;
 import io.github.devlone64.MSLib.builder.input.listener.InputListener;
-import io.github.devlone64.MSLib.builder.inventory.event.ClickEvent;
-import io.github.devlone64.MSLib.builder.inventory.event.CloseEvent;
 import io.github.devlone64.MSLib.builder.inventory.impl.BukkitInventory;
 import io.github.devlone64.MSLib.builder.inventory.impl.CustomInventory;
 import io.github.devlone64.MSLib.command.LoadCommand;
@@ -119,37 +117,13 @@ public class MSPlugin extends JavaPlugin implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player player) {
             if (event.getInventory().getHolder() instanceof BukkitInventory inventory) {
-                ClickEvent clickEvent = new ClickEvent(
-                        event.isCancelled(),
-                        player,
-                        event.getCurrentItem(),
-                        event.getClick(),
-                        event.getView(),
-                        event.getClickedInventory(),
-                        event.getAction(),
-                        event.getSlot(),
-                        event.getRawSlot(),
-                        event.getHotbarButton()
-                );
-                inventory.onClick(clickEvent);
-                event.setCancelled(clickEvent.cancelled);
+                inventory.onClick(event);
+                inventory.onClick(event, player);
             }
 
             if (event.getInventory().getHolder() instanceof CustomInventory inventory) {
-                ClickEvent clickEvent = new ClickEvent(
-                        event.isCancelled(),
-                        player,
-                        event.getCurrentItem(),
-                        event.getClick(),
-                        event.getView(),
-                        event.getClickedInventory(),
-                        event.getAction(),
-                        event.getSlot(),
-                        event.getRawSlot(),
-                        event.getHotbarButton()
-                );
-                inventory.onClick(clickEvent);
-                event.setCancelled(clickEvent.cancelled);
+                inventory.onClick(event);
+                inventory.onClick(event, player);
             }
         }
     }
@@ -158,21 +132,13 @@ public class MSPlugin extends JavaPlugin implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getPlayer() instanceof Player player) {
             if (event.getInventory().getHolder() instanceof BukkitInventory inventory) {
-                CloseEvent closeEvent = new CloseEvent(
-                        player,
-                        event.getView(),
-                        event.getInventory()
-                );
-                inventory.onClose(closeEvent);
+                inventory.onClose(event);
+                inventory.onClose(event, player);
             }
 
             if (event.getInventory().getHolder() instanceof CustomInventory inventory) {
-                CloseEvent closeEvent = new CloseEvent(
-                        player,
-                        event.getView(),
-                        event.getInventory()
-                );
-                inventory.onClose(closeEvent);
+                inventory.onClose(event);
+                inventory.onClose(event, player);
             }
         }
     }

@@ -146,6 +146,18 @@ public class ItemUtil {
         return first.getType() == twice.getType() && firstMeta.getDisplayName().equalsIgnoreCase(twiceMeta.getDisplayName());
     }
 
+    public static boolean isSameItem(ItemStack first, ItemStack twice) {
+        if (first == null || twice == null)
+            return false;
+        ItemMeta oneMeta = first.getItemMeta();
+        ItemMeta twoMeta = twice.getItemMeta();
+        return (first.getType() == twice.getType()
+                && first.getAmount() == twice.getAmount())
+                || (oneMeta != null && twoMeta != null
+                && oneMeta.hasDisplayName() && twoMeta.hasDisplayName()
+                && oneMeta.getDisplayName().equalsIgnoreCase(twoMeta.getDisplayName()));
+    }
+
     public enum Locale {
         ko_KR, en_US
     }
