@@ -30,7 +30,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MSPlugin extends JavaPlugin implements Listener {
 
     public static String PREFIX;
-    public static MSPlugin INSTANCE;
 
     private final CommandManager commandManager;
 
@@ -42,8 +41,11 @@ public class MSPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onLoad() {
-        INSTANCE = this;
         onInit();
+
+        MSLib.INSTANCE = this;
+        MSLib.LOGGER = getLogger();
+        MSLib.DATA_FOLDER = getDataFolder();
     }
 
     @Override

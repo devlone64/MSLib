@@ -4,17 +4,7 @@ import java.io.File;
 import java.util.logging.Logger;
 
 public class MSLib {
-
-    public static MSPlugin getInstance() {
-        return MSPlugin.INSTANCE;
-    }
-
-    public static Logger getLogger() {
-        return getInstance().getLogger();
-    }
-
-    public static File getPluginFolder() {
-        return getInstance().getDataFolder();
-    }
-
+    public static Logger LOGGER;
+    public static File DATA_FOLDER;
+    public static MSPlugin INSTANCE;
 }

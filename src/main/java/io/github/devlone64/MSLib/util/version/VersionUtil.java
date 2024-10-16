@@ -33,7 +33,7 @@ public class VersionUtil {
                 int patch = (patchText == null || patchText.isEmpty()) ? 0 : Integer.parseInt(patchText);
                 mcVersion = (minor * 100) + patch;
             } catch (NumberFormatException e) {
-                MSLib.getLogger().warning(e.getMessage());
+                MSLib.LOGGER.warning(e.getMessage());
             }
         }
         return mcVersion;

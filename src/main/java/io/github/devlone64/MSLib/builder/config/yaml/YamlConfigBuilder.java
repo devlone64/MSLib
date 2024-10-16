@@ -30,7 +30,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         File directory = new File(plugin.getDataFolder(), dir);
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
-                MSLib.getLogger().severe("Cloud not create %s".formatted(directory.getPath()));
+                MSLib.LOGGER.severe("Cloud not create %s".formatted(directory.getPath()));
                 return;
             }
         }
@@ -38,14 +38,14 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         this.config = new File(dir, name + ".yml");
         if (!this.config.exists()) {
             this.firstTime = true;
-            MSLib.getLogger().info("Creating %s".formatted(this.config.getPath()));
+            MSLib.LOGGER.info("Creating %s".formatted(this.config.getPath()));
             try {
                 if (!this.config.createNewFile()) {
-                    MSLib.getLogger().severe("Cloud not create %s".formatted(this.config.getPath()));
+                    MSLib.LOGGER.severe("Cloud not create %s".formatted(this.config.getPath()));
                     return;
                 }
             } catch (IOException e) {
-                MSLib.getLogger().severe(e.getMessage());
+                MSLib.LOGGER.severe(e.getMessage());
             }
         }
 
@@ -58,7 +58,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         try {
             this.yml.save(this.config);
         } catch (IOException e) {
-            MSLib.getLogger().severe(e.getMessage());
+            MSLib.LOGGER.severe(e.getMessage());
         }
     }
 

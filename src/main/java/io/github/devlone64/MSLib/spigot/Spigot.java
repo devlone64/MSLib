@@ -10,53 +10,49 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.List;
-
 public class Spigot {
-
-    public static void register(Permission permission) {
-        Bukkit.getPluginManager().addPermission(permission);
-    }
-
-    public static void register(Listener listener) {
-        Bukkit.getPluginManager().registerEvents(listener, MSLib.getInstance());
-    }
-
-    public static <T> void register(Class<T> aClass, T t) {
-        Bukkit.getServicesManager().register(aClass, t, MSLib.getInstance(), ServicePriority.Normal);
-    }
 
     public static void register(BaseCommand... commands) {
         for (BaseCommand command : commands) {
-            LoadCommand cmd = MSLib.getInstance().getCommandManager().getCommands().get(command.getClass());
-            if (cmd != null) {
-                if (cmd.getType() == Types.SPIGOT) {
-                    MSLib.getInstance().getCommandManager().spigots(command);
+            LoadCommand loadCommand = MSLib.INSTANCE.getCommandManager().getCommand(command.getClass());
+            if (loadCommand != null) {
+                if (loadCommand.getType() == Types.SPIGOT) {
+                    MSLib.INSTANCE.getCommandManager().spigots(command);
                 } else {
-                    MSLib.getInstance().getCommandManager().customs(command);
+                    MSLib.INSTANCE.getCommandManager().customs(command);
                 }
             }
         }
     }
 
-    public static void register(List<BaseCommand> commands) {
-        register(commands.toArray(new BaseCommand[0]));
+    public static void register(Listener... listeners) {
+        for (Listener listener : listeners) {
+            Bukkit.getPluginManager().registerEvents(listener, MSLib.INSTANCE);
+        }
+    }
+
+    public static void register(Permission permission) {
+        Bukkit.getPluginManager().addPermission(permission);
+    }
+
+    public static <T> void register(Class<T> aClass, T t) {
+        Bukkit.getServicesManager().register(aClass, t, MSLib.INSTANCE, ServicePriority.Normal);
     }
 
     public static BukkitTask async(Runnable runnable) {
-        return Bukkit.getScheduler().runTaskAsynchronously(MSLib.getInstance(), runnable);
+        return Bukkit.getScheduler().runTaskAsynchronously(MSLib.INSTANCE, runnable);
     }
 
     public static BukkitTask sync(Runnable runnable) {
-        return Bukkit.getScheduler().runTask(MSLib.getInstance(), runnable);
+        return Bukkit.getScheduler().runTask(MSLib.INSTANCE, runnable);
     }
 
     public static BukkitTask syncLater(Runnable runnable, long ticks) {
-        return Bukkit.getScheduler().runTaskLater(MSLib.getInstance(), runnable, ticks);
+        return Bukkit.getScheduler().runTaskLater(MSLib.INSTANCE, runnable, ticks);
     }
 
     public static BukkitTask syncTimer(Runnable runnable, long delay, long ticks) {
-        return Bukkit.getScheduler().runTaskTimer(MSLib.getInstance(), runnable, delay, ticks);
+        return Bukkit.getScheduler().runTaskTimer(MSLib.INSTANCE, runnable, delay, ticks);
     }
 
     public static boolean isQueued(int taskId) {

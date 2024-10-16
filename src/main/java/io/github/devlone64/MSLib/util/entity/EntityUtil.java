@@ -68,7 +68,7 @@ public class EntityUtil {
                 entity.teleport(new Location(player.getWorld(), x, y, z, yaw, pitch));
                 count--;
             }
-        }.runTaskTimer(MSLib.getInstance(), 0L, 2L);
+        }.runTaskTimer(MSLib.INSTANCE, 0L, 2L);
         return future;
     }
 

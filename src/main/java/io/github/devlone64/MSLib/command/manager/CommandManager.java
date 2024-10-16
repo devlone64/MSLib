@@ -7,9 +7,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -24,8 +22,7 @@ public class CommandManager {
 
     public void spigots(BaseCommand... commands) {
         for (BaseCommand command : commands) {
-            LoadCommand loadCommand = new LoadCommand(plugin, command);
-            this.commands.put(command.getClass(), loadCommand);
+            this.commands.put(command.getClass(), new LoadCommand(plugin, command));
         }
     }
 
@@ -40,6 +37,10 @@ public class CommandManager {
                 this.commands.put(command.getClass(), loadCommand);
             } catch (Exception ignored) { }
         }
+    }
+
+    public LoadCommand getCommand(Class<? extends BaseCommand> commandClass) {
+        return commands.get(commandClass);
     }
 
 }

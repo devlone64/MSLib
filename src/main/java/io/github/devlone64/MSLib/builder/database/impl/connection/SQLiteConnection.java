@@ -14,7 +14,7 @@ public class SQLiteConnection implements SQLConnection {
 
     public SQLiteConnection(String filePath) {
         this.dataSource = new SQLiteDataSource();
-        File pluginFolder = MSLib.getPluginFolder();
+        File pluginFolder = MSLib.DATA_FOLDER;
         if (!pluginFolder.exists()) pluginFolder.mkdir();
         File dbFile = new File(pluginFolder, filePath);
         this.dataSource.setUrl("jdbc:sqlite:" + dbFile.getAbsolutePath());
