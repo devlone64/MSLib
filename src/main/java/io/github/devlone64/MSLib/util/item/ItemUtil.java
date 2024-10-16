@@ -147,17 +147,10 @@ public class ItemUtil {
     }
 
     public static boolean isSameItem(ItemStack first, ItemStack twice) {
-        if (first == null || twice == null)
-            return false;
-        ItemMeta oneMeta = first.getItemMeta();
-        ItemMeta twoMeta = twice.getItemMeta();
-        if (oneMeta != null && twoMeta != null) {
-            if (oneMeta.hasDisplayName() && twoMeta.hasDisplayName()) {
-                return first.getType() == twice.getType() && first.getAmount() == twice.getAmount()
-                        && oneMeta.getDisplayName().equalsIgnoreCase(twoMeta.getDisplayName());
-            }
-        }
-        return first.getType() == twice.getType() && first.getAmount() == twice.getAmount();
+        if (first == null || twice == null) return false;
+        return first.getType() == twice.getType() &&
+                first.getAmount() == twice.getAmount() &&
+                (first.getItemMeta() == null ? twice.getItemMeta() == null : first.getItemMeta().equals(twice.getItemMeta()));
     }
 
     public enum Locale {
