@@ -23,8 +23,46 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
     private boolean firstTime;
     private YamlConfiguration yml;
 
+    public YamlConfigBuilder(MSPlugin plugin, String name) {
+        this.firstTime = false;
+
+        File dataFolder = plugin.getDataFolder();
+        if (!dataFolder.exists()) {
+            if (!dataFolder.mkdirs()) {
+                MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(dataFolder.getPath()));
+                return;
+            }
+        }
+
+        this.config = new File(dataFolder, name);
+        if (!this.config.exists()) {
+            this.firstTime = true;
+            MSPlugin.INSTANCE.getLogger().info("Creating %s".formatted(this.config.getPath()));
+            try {
+                if (!this.config.createNewFile()) {
+                    MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(this.config.getPath()));
+                    return;
+                }
+            } catch (IOException e) {
+                MSPlugin.INSTANCE.getLogger().severe(e.getMessage());
+            }
+        }
+
+        yml = YamlConfiguration.loadConfiguration(config);
+        yml.options().copyDefaults(true);
+        this.name = name;
+    }
+
     public YamlConfigBuilder(MSPlugin plugin, String dir, String name) {
         this.firstTime = false;
+
+        File dataFolder = plugin.getDataFolder();
+        if (!dataFolder.exists()) {
+            if (!dataFolder.mkdirs()) {
+                MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(dataFolder.getPath()));
+                return;
+            }
+        }
 
         File directory = new File(plugin.getDataFolder(), dir);
         if (!directory.exists()) {
@@ -34,7 +72,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
             }
         }
 
-        this.config = new File(dir, name + ".yml");
+        this.config = new File(dir, name);
         if (!this.config.exists()) {
             this.firstTime = true;
             MSPlugin.INSTANCE.getLogger().info("Creating %s".formatted(this.config.getPath()));
