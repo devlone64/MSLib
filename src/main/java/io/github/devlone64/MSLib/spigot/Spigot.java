@@ -32,7 +32,7 @@ public class Spigot {
             if (cmd != null) {
                 if (cmd.getType() == Types.SPIGOT) {
                     MSLib.getInstance().getCommandManager().spigots(command);
-                } else if (cmd.getType() == Types.CUSTOM) {
+                } else {
                     MSLib.getInstance().getCommandManager().customs(command);
                 }
             }
