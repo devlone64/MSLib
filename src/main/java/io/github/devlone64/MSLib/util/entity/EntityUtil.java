@@ -1,6 +1,5 @@
 package io.github.devlone64.MSLib.util.entity;
 
-import io.github.devlone64.MSLib.MSLib;
 import io.github.devlone64.MSLib.MSPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -68,7 +67,7 @@ public class EntityUtil {
                 entity.teleport(new Location(player.getWorld(), x, y, z, yaw, pitch));
                 count--;
             }
-        }.runTaskTimer(MSLib.INSTANCE, 0L, 2L);
+        }.runTaskTimer(MSPlugin.INSTANCE, 0L, 2L);
         return future;
     }
 

@@ -1,6 +1,6 @@
 package io.github.devlone64.MSLib.util.bytes;
 
-import io.github.devlone64.MSLib.MSLib;
+import io.github.devlone64.MSLib.MSPlugin;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class SerializeUtil {
         try (ObjectOutputStream objStream = new ObjectOutputStream(byteStream)) {
             objStream.writeObject(item);
         } catch (IOException e) {
-            MSLib.LOGGER.warning(e.getMessage());
+            MSPlugin.INSTANCE.getLogger().warning(e.getMessage());
         }
         return byteStream.toByteArray();
     }
@@ -23,7 +23,7 @@ public class SerializeUtil {
         try (ObjectInputStream objStream = new ObjectInputStream(byteStream)) {
             return (T) objStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            MSLib.LOGGER.warning(e.getMessage());
+            MSPlugin.INSTANCE.getLogger().warning(e.getMessage());
         }
         return null;
     }
@@ -33,7 +33,7 @@ public class SerializeUtil {
         try (ObjectInputStream objStream = new ObjectInputStream(byteStream)) {
             return (List<T>) objStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            MSLib.LOGGER.warning(e.getMessage());
+            MSPlugin.INSTANCE.getLogger().warning(e.getMessage());
         }
         return new ArrayList<>();
     }

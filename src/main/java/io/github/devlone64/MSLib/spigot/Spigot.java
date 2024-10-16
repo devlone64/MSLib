@@ -1,10 +1,12 @@
 package io.github.devlone64.MSLib.spigot;
 
-import io.github.devlone64.MSLib.MSLib;
+import io.github.devlone64.MSLib.MSPlugin;
 import io.github.devlone64.MSLib.command.BaseCommand;
 import io.github.devlone64.MSLib.command.LoadCommand;
 import io.github.devlone64.MSLib.command.data.Types;
+import io.github.devlone64.MSLib.command.impl.bukkit.NormalCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.ServicePriority;
@@ -14,12 +16,17 @@ public class Spigot {
 
     public static void register(BaseCommand... commands) {
         for (BaseCommand command : commands) {
-            LoadCommand loadCommand = MSLib.INSTANCE.getCommandManager().getCommand(command.getClass());
+            LoadCommand loadCommand = MSPlugin.INSTANCE.getCommandManager().getCommand(command.getClass());
             if (loadCommand != null) {
                 if (loadCommand.getType() == Types.SPIGOT) {
-                    MSLib.INSTANCE.getCommandManager().spigots(command);
+                    MSPlugin.INSTANCE.getCommandManager().spigots(command);
+                    PluginCommand cmd = MSPlugin.INSTANCE.getCommand(loadCommand.getName());
+                    if (cmd != null) {
+                        cmd.setExecutor(new NormalCommand(loadCommand));
+                        cmd.setTabCompleter(new NormalCommand(loadCommand));
+                    }
                 } else {
-                    MSLib.INSTANCE.getCommandManager().customs(command);
+                    MSPlugin.INSTANCE.getCommandManager().customs(command);
                 }
             }
         }
@@ -27,7 +34,7 @@ public class Spigot {
 
     public static void register(Listener... listeners) {
         for (Listener listener : listeners) {
-            Bukkit.getPluginManager().registerEvents(listener, MSLib.INSTANCE);
+            Bukkit.getPluginManager().registerEvents(listener, MSPlugin.INSTANCE);
         }
     }
 
@@ -36,23 +43,23 @@ public class Spigot {
     }
 
     public static <T> void register(Class<T> aClass, T t) {
-        Bukkit.getServicesManager().register(aClass, t, MSLib.INSTANCE, ServicePriority.Normal);
+        Bukkit.getServicesManager().register(aClass, t, MSPlugin.INSTANCE, ServicePriority.Normal);
     }
 
     public static BukkitTask async(Runnable runnable) {
-        return Bukkit.getScheduler().runTaskAsynchronously(MSLib.INSTANCE, runnable);
+        return Bukkit.getScheduler().runTaskAsynchronously(MSPlugin.INSTANCE, runnable);
     }
 
     public static BukkitTask sync(Runnable runnable) {
-        return Bukkit.getScheduler().runTask(MSLib.INSTANCE, runnable);
+        return Bukkit.getScheduler().runTask(MSPlugin.INSTANCE, runnable);
     }
 
     public static BukkitTask syncLater(Runnable runnable, long ticks) {
-        return Bukkit.getScheduler().runTaskLater(MSLib.INSTANCE, runnable, ticks);
+        return Bukkit.getScheduler().runTaskLater(MSPlugin.INSTANCE, runnable, ticks);
     }
 
     public static BukkitTask syncTimer(Runnable runnable, long delay, long ticks) {
-        return Bukkit.getScheduler().runTaskTimer(MSLib.INSTANCE, runnable, delay, ticks);
+        return Bukkit.getScheduler().runTaskTimer(MSPlugin.INSTANCE, runnable, delay, ticks);
     }
 
     public static boolean isQueued(int taskId) {

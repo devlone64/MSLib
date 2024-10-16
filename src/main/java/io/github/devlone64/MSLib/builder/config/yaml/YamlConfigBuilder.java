@@ -1,6 +1,5 @@
 package io.github.devlone64.MSLib.builder.config.yaml;
 
-import io.github.devlone64.MSLib.MSLib;
 import io.github.devlone64.MSLib.MSPlugin;
 import io.github.devlone64.MSLib.builder.config.ConfigBuilderProvider;
 import io.github.devlone64.MSLib.util.item.ItemUtil;
@@ -30,7 +29,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         File directory = new File(plugin.getDataFolder(), dir);
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
-                MSLib.LOGGER.severe("Cloud not create %s".formatted(directory.getPath()));
+                MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(directory.getPath()));
                 return;
             }
         }
@@ -38,14 +37,14 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         this.config = new File(dir, name + ".yml");
         if (!this.config.exists()) {
             this.firstTime = true;
-            MSLib.LOGGER.info("Creating %s".formatted(this.config.getPath()));
+            MSPlugin.INSTANCE.getLogger().info("Creating %s".formatted(this.config.getPath()));
             try {
                 if (!this.config.createNewFile()) {
-                    MSLib.LOGGER.severe("Cloud not create %s".formatted(this.config.getPath()));
+                    MSPlugin.INSTANCE.getLogger().severe("Cloud not create %s".formatted(this.config.getPath()));
                     return;
                 }
             } catch (IOException e) {
-                MSLib.LOGGER.severe(e.getMessage());
+                MSPlugin.INSTANCE.getLogger().severe(e.getMessage());
             }
         }
 
@@ -58,7 +57,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         try {
             this.yml.save(this.config);
         } catch (IOException e) {
-            MSLib.LOGGER.severe(e.getMessage());
+            MSPlugin.INSTANCE.getLogger().severe(e.getMessage());
         }
     }
 

@@ -1,6 +1,7 @@
 package io.github.devlone64.MSLib.util.version;
 
 import io.github.devlone64.MSLib.MSLib;
+import io.github.devlone64.MSLib.MSPlugin;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class VersionUtil {
                 int patch = (patchText == null || patchText.isEmpty()) ? 0 : Integer.parseInt(patchText);
                 mcVersion = (minor * 100) + patch;
             } catch (NumberFormatException e) {
-                MSLib.LOGGER.warning(e.getMessage());
+                MSPlugin.INSTANCE.getLogger().warning(e.getMessage());
             }
         }
         return mcVersion;

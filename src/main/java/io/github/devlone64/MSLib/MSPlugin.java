@@ -30,21 +30,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MSPlugin extends JavaPlugin implements Listener {
 
     public static String PREFIX;
+    public static MSPlugin INSTANCE;
 
     private final CommandManager commandManager;
 
     public MSPlugin() {
         PREFIX = Component.from("<GRADIENT:FF9633>%s</GRADIENT:FFD633>&r".formatted(getName()));
+        INSTANCE = this;
 
         this.commandManager = new CommandManager(this);
     }
 
     @Override
     public void onLoad() {
-        MSLib.INSTANCE = this;
-        MSLib.LOGGER = getLogger();
-        MSLib.DATA_FOLDER = getDataFolder();
-
         onInit();
     }
 

@@ -1,6 +1,6 @@
 package io.github.devlone64.MSLib.builder.database.impl.connection;
 
-import io.github.devlone64.MSLib.MSLib;
+import io.github.devlone64.MSLib.MSPlugin;
 import io.github.devlone64.MSLib.builder.database.data.SQLConnection;
 import org.sqlite.SQLiteDataSource;
 
@@ -14,7 +14,7 @@ public class SQLiteConnection implements SQLConnection {
 
     public SQLiteConnection(String filePath) {
         this.dataSource = new SQLiteDataSource();
-        File pluginFolder = MSLib.DATA_FOLDER;
+        File pluginFolder = MSPlugin.INSTANCE.getDataFolder();
         if (!pluginFolder.exists()) pluginFolder.mkdir();
         File dbFile = new File(pluginFolder, filePath);
         this.dataSource.setUrl("jdbc:sqlite:" + dbFile.getAbsolutePath());
