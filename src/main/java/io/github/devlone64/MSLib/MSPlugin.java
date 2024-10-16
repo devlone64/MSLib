@@ -41,11 +41,11 @@ public class MSPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onLoad() {
-        onInit();
-
         MSLib.INSTANCE = this;
         MSLib.LOGGER = getLogger();
         MSLib.DATA_FOLDER = getDataFolder();
+
+        onInit();
     }
 
     @Override
