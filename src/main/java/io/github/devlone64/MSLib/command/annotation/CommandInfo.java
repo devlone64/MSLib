@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 public @interface CommandInfo {
     String name();
     String usage() default "";
-    String prefix() default "";
     String comment() default "";
     String[] aliases() default {};
 

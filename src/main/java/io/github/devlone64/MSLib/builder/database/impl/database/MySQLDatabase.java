@@ -24,7 +24,7 @@ public class MySQLDatabase implements SQLDatabase {
 
     @Override
     public boolean createTable(String table, String columns) {
-        return executeUpdate(getConnection(), "CREATE TABLE IF NOT EXISTS %s(%s)".formatted(table, columns)) != -1;
+        return executeUpdate(getConnection(), "CREATE TABLE IF NOT EXISTS %s (%s)".formatted(table, columns)) != -1;
     }
 
     @Override
