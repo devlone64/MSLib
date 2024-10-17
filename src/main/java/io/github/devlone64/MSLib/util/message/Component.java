@@ -1,9 +1,5 @@
 package io.github.devlone64.MSLib.util.message;
 
-import io.github.devlone64.MSLib.MSPlugin;
-import io.github.devlone64.MSLib.builder.config.ConfigBuilderProvider;
-import io.github.devlone64.MSLib.builder.config.custom.CustomConfigBuilder;
-import io.github.devlone64.MSLib.builder.config.yaml.YamlConfigBuilder;
 import io.github.devlone64.MSLib.nms.NmsVersion;
 import io.github.devlone64.MSLib.util.color.ColorUtil;
 import org.bukkit.ChatColor;
@@ -13,24 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Component {
-
-    public static String from(ConfigBuilderProvider config, String path) {
-        if (config instanceof CustomConfigBuilder c) {
-            return from(c.getString(path).replace("{@기본}", MSPlugin.PREFIX));
-        } else if (config instanceof YamlConfigBuilder c) {
-            return from(c.getString(path).replace("{@기본}", MSPlugin.PREFIX));
-        }
-        return null;
-    }
-
-    public static List<String> fromList(ConfigBuilderProvider config, String path) {
-        if (config instanceof CustomConfigBuilder c) {
-            return from(c.getList(path));
-        } else if (config instanceof YamlConfigBuilder c) {
-            return from(c.getStringList(path));
-        }
-        return null;
-    }
 
     public static String from(String message) {
         if (NmsVersion.getCurrentVersion().isGradientVersion())

@@ -24,12 +24,20 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
     private YamlConfiguration yml;
 
     public YamlConfigBuilder(MSPlugin plugin, String name) {
+        this(plugin, name, false);
+    }
+
+    public YamlConfigBuilder(MSPlugin plugin, String dir, String name) {
+        this(plugin, dir, name, false);
+    }
+
+    public YamlConfigBuilder(MSPlugin plugin, String name, boolean isDir) {
         this.firstTime = false;
 
         File dataFolder = plugin.getDataFolder();
         if (!dataFolder.exists()) {
             if (!dataFolder.mkdirs()) {
-                MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(dataFolder.getPath()));
+                MSPlugin.LOGGER.severe("Cloud not create folder to '%s'.".formatted(dataFolder.getPath()));
                 return;
             }
         }
@@ -38,13 +46,20 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         if (!this.config.exists()) {
             this.firstTime = true;
             MSPlugin.LOGGER.info("Creating to '%s'".formatted(this.config.getPath()));
-            try {
-                if (!this.config.createNewFile()) {
-                    MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(this.config.getPath()));
+            if (!isDir) {
+                try {
+                    if (!this.config.createNewFile()) {
+                        MSPlugin.LOGGER.severe("Cloud not create file to '%s'.".formatted(this.config.getPath()));
+                        return;
+                    }
+                } catch (IOException e) {
+                    MSPlugin.LOGGER.severe(e.getMessage());
+                }
+            } else {
+                if (!this.config.mkdirs()) {
+                    MSPlugin.LOGGER.severe("Cloud not create folder to '%s'.".formatted(this.config.getPath()));
                     return;
                 }
-            } catch (IOException e) {
-                MSPlugin.LOGGER.severe(e.getMessage());
             }
         }
 
@@ -53,13 +68,13 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         this.name = name;
     }
 
-    public YamlConfigBuilder(MSPlugin plugin, String dir, String name) {
+    public YamlConfigBuilder(MSPlugin plugin, String dir, String name, boolean isDir) {
         this.firstTime = false;
 
         File dataFolder = plugin.getDataFolder();
         if (!dataFolder.exists()) {
             if (!dataFolder.mkdirs()) {
-                MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(dataFolder.getPath()));
+                MSPlugin.LOGGER.severe("Cloud not create folder to '%s'.".formatted(dataFolder.getPath()));
                 return;
             }
         }
@@ -67,7 +82,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         File directory = new File(plugin.getDataFolder(), dir);
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
-                MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(directory.getPath()));
+                MSPlugin.LOGGER.severe("Cloud not create folder to '%s'.".formatted(directory.getPath()));
                 return;
             }
         }
@@ -76,13 +91,20 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
         if (!this.config.exists()) {
             this.firstTime = true;
             MSPlugin.LOGGER.info("Creating to '%s'".formatted(this.config.getPath()));
-            try {
-                if (!this.config.createNewFile()) {
-                    MSPlugin.LOGGER.severe("Cloud not create to '%s'".formatted(this.config.getPath()));
+            if (!isDir) {
+                try {
+                    if (!this.config.createNewFile()) {
+                        MSPlugin.LOGGER.severe("Cloud not create file to '%s'.".formatted(this.config.getPath()));
+                        return;
+                    }
+                } catch (IOException e) {
+                    MSPlugin.LOGGER.severe(e.getMessage());
+                }
+            } else {
+                if (!this.config.mkdirs()) {
+                    MSPlugin.LOGGER.severe("Cloud not create folder to '%s'.".formatted(this.config.getPath()));
                     return;
                 }
-            } catch (IOException e) {
-                MSPlugin.LOGGER.severe(e.getMessage());
             }
         }
 
