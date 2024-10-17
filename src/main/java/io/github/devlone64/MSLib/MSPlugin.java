@@ -39,7 +39,7 @@ public class MSPlugin extends JavaPlugin implements Listener {
         INSTANCE = this;
         LOGGER = getLogger();
 
-        PREFIX = Component.from("<GRADIENT:FF9633>%s</GRADIENT:FFD633>&r".formatted(getName()));
+        PREFIX = "<GRADIENT:FF9633>&l%s</GRADIENT:FFD633>&r".formatted(getName());
     }
 
     @Override

@@ -16,9 +16,9 @@ public class Component {
 
     public static String from(ConfigBuilderProvider config, String path) {
         if (config instanceof CustomConfigBuilder c) {
-            return from(c.getString(path).replace("{말머리}", MSPlugin.PREFIX));
+            return from(c.getString(path).replace("{@기본}", MSPlugin.PREFIX));
         } else if (config instanceof YamlConfigBuilder c) {
-            return from(c.getString(path).replace("{말머리}", MSPlugin.PREFIX));
+            return from(c.getString(path).replace("{@기본}", MSPlugin.PREFIX));
         }
         return null;
     }
