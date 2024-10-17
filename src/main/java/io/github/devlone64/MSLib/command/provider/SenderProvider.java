@@ -1,4 +1,4 @@
-package io.github.devlone64.MSLib.command.data;
+package io.github.devlone64.MSLib.command.provider;
 
 import org.bukkit.entity.Player;
 

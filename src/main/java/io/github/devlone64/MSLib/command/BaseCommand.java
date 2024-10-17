@@ -1,6 +1,6 @@
 package io.github.devlone64.MSLib.command;
 
-import io.github.devlone64.MSLib.command.data.SenderProvider;
+import io.github.devlone64.MSLib.command.provider.SenderProvider;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
