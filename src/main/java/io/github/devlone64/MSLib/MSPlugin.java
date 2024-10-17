@@ -83,10 +83,10 @@ public class MSPlugin extends JavaPlugin implements Listener {
         var player = event.getPlayer();
         for (var commandData : getCommandManager().getCommandDataList()) {
             if (commandData.getName() != null && commandData.getName().toLowerCase().contains(event.getMessage().replace("/", ""))) {
-                if (commandData.getPermissionNode() != null && !commandData.getPermissionNode().isEmpty()) {
-                    if (!player.hasPermission(commandData.getPermissionMessage())) {
+                if (commandData.getNode() != null && !commandData.getNode().isEmpty()) {
+                    if (!player.hasPermission(commandData.getNode())) {
                         event.setCancelled(true);
-                        player.sendMessage(Component.from(commandData.getPermissionMessage()));
+                        player.sendMessage(Component.from(commandData.getBaseCommand().onPermissionRequest(player)));
                     }
                 }
             }

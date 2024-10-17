@@ -21,9 +21,9 @@ public class CmdExecutor implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (getCommandData().getBaseCommand().getSenderType() == SenderType.CONSOLE) {
+        if (getCommandData().getSenderType() == SenderType.CONSOLE) {
             return getCommandData().getBaseCommand().perform(sender, args);
-        } else if (getCommandData().getBaseCommand().getSenderType() == SenderType.PLAYER) {
+        } else if (getCommandData().getSenderType() == SenderType.PLAYER) {
             if (sender instanceof ConsoleCommandSender) {
                 sender.sendMessage(from("&7[%s] &r%s".formatted(
                         getCommandData().getPlugin().getName(),
@@ -38,9 +38,9 @@ public class CmdExecutor implements CommandExecutor, TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (getCommandData().getBaseCommand().getSenderType() == SenderType.CONSOLE) {
+        if (getCommandData().getSenderType() == SenderType.CONSOLE) {
             return getCommandData().getBaseCommand().complete(sender, args);
-        } else if (getCommandData().getBaseCommand().getSenderType() == SenderType.PLAYER) {
+        } else if (getCommandData().getSenderType() == SenderType.PLAYER) {
             if (sender instanceof ConsoleCommandSender) return List.of();
             return getCommandData().getBaseCommand().complete((Player) sender, args);
         }

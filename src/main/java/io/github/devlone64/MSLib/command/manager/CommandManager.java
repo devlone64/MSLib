@@ -44,7 +44,7 @@ public class CommandManager {
                 command.setUsage(commandData.getUsage());
                 command.setDescription(commandData.getComment());
                 command.setAliases(commandData.getAliases());
-                command.setPermission(commandData.getPermissionNode());
+                command.setPermission(commandData.getNode());
                 commandMap.register(getPlugin().getName(), command);
                 getCommandDataList().add(commandData);
             }
