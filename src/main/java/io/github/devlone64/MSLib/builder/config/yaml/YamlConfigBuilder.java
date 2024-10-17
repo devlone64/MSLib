@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -34,7 +35,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
     public YamlConfigBuilder(MSPlugin plugin, String name, boolean isDir) {
         this.firstTime = false;
 
-        File dataFolder = plugin.getDataFolder();
+        var dataFolder = plugin.getDataFolder();
         if (!dataFolder.exists()) {
             if (!dataFolder.mkdirs()) {
                 MSPlugin.LOGGER.severe("Cloud not create folder to '%s'.".formatted(dataFolder.getPath()));
@@ -63,15 +64,15 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
             }
         }
 
-        yml = YamlConfiguration.loadConfiguration(config);
-        yml.options().copyDefaults(true);
+        this.yml = YamlConfiguration.loadConfiguration(config);
+        this.yml.options().copyDefaults(true);
         this.name = name;
     }
 
     public YamlConfigBuilder(MSPlugin plugin, String dir, String name, boolean isDir) {
         this.firstTime = false;
 
-        File dataFolder = plugin.getDataFolder();
+        var dataFolder = plugin.getDataFolder();
         if (!dataFolder.exists()) {
             if (!dataFolder.mkdirs()) {
                 MSPlugin.LOGGER.severe("Cloud not create folder to '%s'.".formatted(dataFolder.getPath()));
@@ -79,7 +80,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
             }
         }
 
-        File directory = new File(plugin.getDataFolder(), dir);
+        var directory = new File(dataFolder, dir);
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
                 MSPlugin.LOGGER.severe("Cloud not create folder to '%s'.".formatted(directory.getPath()));
@@ -87,7 +88,7 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
             }
         }
 
-        this.config = new File(dir, name);
+        this.config = new File(directory, name);
         if (!this.config.exists()) {
             this.firstTime = true;
             MSPlugin.LOGGER.info("Creating to '%s'".formatted(this.config.getPath()));
@@ -108,8 +109,8 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
             }
         }
 
-        yml = YamlConfiguration.loadConfiguration(config);
-        yml.options().copyDefaults(true);
+        this.yml = YamlConfiguration.loadConfiguration(config);
+        this.yml.options().copyDefaults(true);
         this.name = name;
     }
 
@@ -122,12 +123,12 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
     }
 
     public void reload() {
-        this.yml = YamlConfiguration.loadConfiguration(this.config);
+        this.yml = YamlConfiguration.loadConfiguration(getConfig());
     }
 
     public void set(String path, Object value) {
-        this.yml.set(path, value);
-        this.saveYml();
+        getYml().set(path, value);
+        saveYml();
     }
 
     public Object get(String path) {
@@ -135,31 +136,31 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
     }
 
     public Object get(String path, Object def) {
-        return yml.get(path, def);
+        return getYml().get(path, def);
     }
 
     public String getString(String path) {
-        return yml.getString(path);
+        return getYml().getString(path);
     }
 
     public String getString(String path, String def) {
-        return yml.getString(path, def);
+        return getYml().getString(path, def);
     }
 
     public int getInt(String path) {
-        return yml.getInt(path);
+        return getYml().getInt(path);
     }
 
     public int getInt(String path, int def) {
-        return yml.getInt(path, def);
+        return getYml().getInt(path, def);
     }
 
     public double getDouble(String path) {
-        return yml.getDouble(path);
+        return getYml().getDouble(path);
     }
 
     public double getDouble(String path, double def) {
-        return yml.getDouble(path, def);
+        return getYml().getDouble(path, def);
     }
 
     public float getFloat(String path) {
@@ -171,31 +172,40 @@ public class YamlConfigBuilder implements ConfigBuilderProvider {
     }
 
     public boolean getBoolean(String path) {
-        return yml.getBoolean(path);
+        return getYml().getBoolean(path);
     }
 
     public boolean getBoolean(String path, boolean def) {
-        return yml.getBoolean(path, def);
+        return getYml().getBoolean(path, def);
     }
 
     public List<?> getList(String path) {
-        return yml.getList(path);
+        return getYml().getList(path);
     }
 
     public List<?> getList(String path, List<?> def) {
-        return yml.getList(path, def);
+        return getYml().getList(path, def);
     }
 
     public List<String> getStringList(String path) {
-        return yml.getStringList(path);
+        return getYml().getStringList(path);
+    }
+
+    public List<String> getKeys() {
+        return new ArrayList<>(getYml().getKeys(false));
+    }
+
+    public List<String> getKeys(String path) {
+        var section = getYml().getConfigurationSection(path);
+        return section != null ? new ArrayList<>(section.getKeys(false)) : new ArrayList<>();
     }
 
     public boolean contains(String path) {
-        return yml.contains(path);
+        return getYml().contains(path);
     }
 
     public boolean exists() {
-        return config.exists();
+        return getConfig().exists();
     }
 
     public String convertLocation(Location location) {

@@ -3,7 +3,6 @@ package io.github.devlone64.MSLib;
 import io.github.devlone64.MSLib.builder.input.InputBuilder;
 import io.github.devlone64.MSLib.builder.inventory.impl.BukkitInventory;
 import io.github.devlone64.MSLib.builder.inventory.impl.CustomInventory;
-import io.github.devlone64.MSLib.builder.language.manager.PlayerLanguageManager;
 import io.github.devlone64.MSLib.command.manager.CommandManager;
 import io.github.devlone64.MSLib.spigot.Spigot;
 import io.github.devlone64.MSLib.util.Console;
@@ -35,7 +34,6 @@ public class MSPlugin extends JavaPlugin implements Listener {
     public static MSPlugin INSTANCE;
 
     private final CommandManager commandManager = new CommandManager(this);
-    private final PlayerLanguageManager languageManager = new PlayerLanguageManager();
 
     public MSPlugin() {
         INSTANCE = this;

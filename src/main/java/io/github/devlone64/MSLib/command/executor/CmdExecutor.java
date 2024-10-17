@@ -2,29 +2,25 @@ package io.github.devlone64.MSLib.command.executor;
 
 import io.github.devlone64.MSLib.command.data.CommandData;
 import io.github.devlone64.MSLib.command.enums.SenderType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 import static io.github.devlone64.MSLib.util.message.Component.from;
 
 @Getter
-public class PaperExecutor extends BukkitCommand {
-    
+@AllArgsConstructor
+public class CmdExecutor implements CommandExecutor, TabExecutor {
+
     private final CommandData commandData;
 
-    public PaperExecutor(CommandData commandData) {
-        super(commandData.getName());
-        this.commandData = commandData;
-    }
-
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String arg, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (getCommandData().getBaseCommand().getSenderType() == SenderType.CONSOLE) {
             return getCommandData().getBaseCommand().perform(sender, args);
         } else if (getCommandData().getBaseCommand().getSenderType() == SenderType.PLAYER) {
@@ -40,9 +36,8 @@ public class PaperExecutor extends BukkitCommand {
         return false;
     }
 
-    @NotNull
     @Override
-    public List<String> tabComplete(@NotNull CommandSender sender, @NotNull String arg, String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (getCommandData().getBaseCommand().getSenderType() == SenderType.CONSOLE) {
             return getCommandData().getBaseCommand().complete(sender, args);
         } else if (getCommandData().getBaseCommand().getSenderType() == SenderType.PLAYER) {
@@ -51,5 +46,5 @@ public class PaperExecutor extends BukkitCommand {
         }
         return List.of();
     }
-    
+
 }

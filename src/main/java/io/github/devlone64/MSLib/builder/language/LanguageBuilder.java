@@ -40,7 +40,7 @@ public class LanguageBuilder extends YamlConfigBuilder {
 
     public Language getLanguage(String langId) {
         for (var language : getLanguageMap().values()) {
-            if (language.getId().equalsIgnoreCase(langId)) {
+            if (language.getName().equalsIgnoreCase(langId)) {
                 return language;
             }
         }
@@ -52,7 +52,7 @@ public class LanguageBuilder extends YamlConfigBuilder {
     }
 
     public List<String> getLanguageKeys() {
-        return getLanguageMap().values().stream().map(Language::getId).toList();
+        return getLanguageMap().values().stream().map(Language::getName).toList();
     }
 
     public List<Language> getLanguages() {
