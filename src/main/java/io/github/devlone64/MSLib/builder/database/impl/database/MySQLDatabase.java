@@ -1,6 +1,6 @@
 package io.github.devlone64.MSLib.builder.database.impl.database;
 
-import io.github.devlone64.MSLib.builder.database.data.SQLDatabase;
+import io.github.devlone64.MSLib.builder.database.sql.SQLDatabase;
 import io.github.devlone64.MSLib.builder.database.handler.ClassHandler;
 import io.github.devlone64.MSLib.builder.database.impl.connection.MySQLConnection;
 import lombok.Getter;
@@ -140,9 +140,13 @@ public class MySQLDatabase implements SQLDatabase {
         var query = "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic);
         var statement = prepareStatement(getConnection(), query, data);
         try (ResultSet resultSet = statement.executeQuery()) {
+            var count = 0;
             List<Object> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(resultSet.getObject(selected));
+                var strings = selected.split(",");
+                if (count >= strings.length) break;
+                result.add(resultSet.getObject(strings[count].replace(" ", "")));
+                count++;
             }
 
             statement.close();
@@ -158,9 +162,13 @@ public class MySQLDatabase implements SQLDatabase {
         var query = "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic);
         var statement = prepareStatement(getConnection(), query, data);
         try (ResultSet resultSet = statement.executeQuery()) {
+            var count = 0;
             List<String> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(resultSet.getString(selected));
+                var strings = selected.split(",");
+                if (count >= strings.length) break;
+                result.add(resultSet.getString(strings[count].replace(" ", "")));
+                count++;
             }
 
             statement.close();
@@ -180,6 +188,28 @@ public class MySQLDatabase implements SQLDatabase {
             List<T> result = new ArrayList<>();
             while (resultSet.next()) {
                 result.add(handler.consume(resultSet));
+            }
+
+            statement.close();
+            resultSet.close();
+
+            return result;
+        }
+    }
+
+    @Override
+    @SneakyThrows
+    public List<String> getKeys(String table, String selected) {
+        var query = "SELECT %s FROM %s".formatted(selected, table);
+        var statement = prepareStatement(getConnection(), query);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            var count = 0;
+            List<String> result = new ArrayList<>();
+            while (resultSet.next()) {
+                var strings = selected.split(",");
+                if (count >= strings.length) break;
+                result.add(resultSet.getString(strings[count].replace(" ", "")));
+                count++;
             }
 
             statement.close();

@@ -1,7 +1,7 @@
 package io.github.devlone64.MSLib.builder.database.impl.connection;
 
 import io.github.devlone64.MSLib.MSLib;
-import io.github.devlone64.MSLib.builder.database.data.SQLConnection;
+import io.github.devlone64.MSLib.builder.database.sql.SQLConnection;
 import io.github.devlone64.MSLib.spigot.Spigot;
 import lombok.SneakyThrows;
 

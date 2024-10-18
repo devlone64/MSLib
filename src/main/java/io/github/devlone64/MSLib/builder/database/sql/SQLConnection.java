@@ -1,4 +1,4 @@
-package io.github.devlone64.MSLib.builder.database.data;
+package io.github.devlone64.MSLib.builder.database.sql;
 
 import lombok.Getter;
 import lombok.Setter;

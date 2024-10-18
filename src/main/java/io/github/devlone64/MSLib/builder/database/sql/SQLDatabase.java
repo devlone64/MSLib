@@ -1,4 +1,4 @@
-package io.github.devlone64.MSLib.builder.database.data;
+package io.github.devlone64.MSLib.builder.database.sql;
 
 import io.github.devlone64.MSLib.builder.database.handler.ClassHandler;
 
@@ -19,6 +19,8 @@ public interface SQLDatabase {
     List<Object> getList(String table, String selected, String logic, String column, String data);
     List<String> getStringList(String table, String selected, String logic, String column, String data);
     <T> List<T> getList(String table, String selected, String logic, String column, String data, ClassHandler<T> handler);
+
+    List<String> getKeys(String table, String selected);
 
     boolean is(String table, String column, String data);
 }

@@ -1,16 +1,9 @@
 package io.github.devlone64.MSLib.util.sql;
 
-import io.github.devlone64.MSLib.builder.database.data.SQLConnection;
-import io.github.devlone64.MSLib.builder.database.handler.ClassHandler;
-import io.github.devlone64.MSLib.builder.database.handler.PreparedHandler;
+import io.github.devlone64.MSLib.builder.database.sql.SQLConnection;
 import lombok.SneakyThrows;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SQLUtil {
 
