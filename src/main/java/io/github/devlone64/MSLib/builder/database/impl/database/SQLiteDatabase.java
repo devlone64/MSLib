@@ -47,13 +47,13 @@ public class SQLiteDatabase implements SQLDatabase {
     @SneakyThrows
     public void set(String table, String selected, Object[] values, String logic, String column, String data) {
         if (is(table, column, data)) {
-            var query = "UPDATE %s SET %s = ? WHERE %s %s ?".formatted(table, "`" + String.join("` = ?, `", selected.split(", ")) + "` = ?", column, logic);
+            var query = "UPDATE %s SET %s WHERE %s %s ?".formatted(table, "`" + String.join("` = ?, `", selected.split(", ")) + "` = ?", column, logic);
             var statement = prepareStatement(getConnection(), query, values, data);
 
             statement.executeUpdate();
             statement.close();
         } else {
-            var query = "INSERT INTO %s(%s, %s) VALUES(?, %s)".formatted(table, column, selected, String.join(", ", Collections.nCopies(values.length, "?")));
+            var query = "INSERT INTO %s(%s) VALUES(%s)".formatted(table, selected, String.join(", ", Collections.nCopies(values.length, "?")));
             var statement = prepareStatement(getConnection(), query, values);
 
             statement.executeUpdate();
