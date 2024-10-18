@@ -4,10 +4,10 @@ import io.github.devlone64.MSLib.builder.database.data.SQLDatabase;
 import io.github.devlone64.MSLib.builder.database.handler.ClassHandler;
 import io.github.devlone64.MSLib.builder.database.impl.connection.SQLiteConnection;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,85 +23,184 @@ public class SQLiteDatabase implements SQLDatabase {
     }
 
     @Override
-    public boolean createTable(String table, String columns) {
+    @SneakyThrows
+    public void createTable(String table, String columns) {
         var id = "id INTEGER PRIMARY KEY AUTOINCREMENT";
-        return executeUpdate(getConnection(), "CREATE TABLE IF NOT EXISTS %s (%s, %s)".formatted(table, id, columns)) != -1;
+        var query = "CREATE TABLE IF NOT EXISTS %s(%s, %s)".formatted(table, id, columns);
+        var statement = prepareStatement(getConnection(), query);
+
+        statement.executeUpdate();
+        statement.close();
     }
 
     @Override
-    public boolean deleteTable(String table) {
-        return executeUpdate(getConnection(), "DROP TABLE IF EXISTS %s".formatted(table)) != -1;
+    @SneakyThrows
+    public void deleteTable(String table) {
+        var query = "DROP TABLE IF EXISTS %s".formatted(table);
+        var statement = prepareStatement(getConnection(), query);
+
+        statement.executeUpdate();
+        statement.close();
     }
 
     @Override
-    public boolean set(String table, String selected, Object[] values, String logic, String column, String data) {
+    @SneakyThrows
+    public void set(String table, String selected, Object[] values, String logic, String column, String data) {
         if (is(table, column, data)) {
-            return executeUpdate(getConnection(), "UPDATE %s SET %s WHERE %s %s ?".formatted(table, "`" + String.join("` = ?, `", selected.split(", ")) + "` = ?", column, logic), e -> {
-                for (int i = 0; i < values.length; i++) {
-                    e.setObject(i + 1, values[i]);
-                }
-                e.setObject(values.length + 1, data);
-            }) != -1;
+            var query = "UPDATE %s SET %s = ? WHERE %s %s ?".formatted(table, "`" + String.join("` = ?, `", selected.split(", ")) + "` = ?", column, logic);
+            var statement = prepareStatement(getConnection(), query, values, data);
+
+            statement.executeUpdate();
+            statement.close();
         } else {
-            return executeUpdate(getConnection(), "INSERT INTO %s(%s, %s) VALUES(?, %s)".formatted(table, column, selected, String.join(", ", Collections.nCopies(values.length, "?"))), e -> {
-                e.setObject(1, data);
-                for (int i = 0; i < values.length; i++) {
-                    e.setObject(i + 2, values[i]);
-                }
-            }) != -1;
+            var query = "INSERT INTO %s(%s, %s) VALUES(?, %s)".formatted(table, column, selected, String.join(", ", Collections.nCopies(values.length, "?")));
+            var statement = prepareStatement(getConnection(), query, values);
+
+            statement.executeUpdate();
+            statement.close();
         }
     }
 
     @Override
-    public boolean remove(String table, String logic, String column, String data) {
-        return executeUpdate(getConnection(), "DELETE FROM %s WHERE %s %s ?".formatted(table, column, logic), e -> e.setString(1, data)) != -1;
+    @SneakyThrows
+    public void setIfAbuse(String table, String selected, Object[] values, String logic, String column, String data) {
+        if (is(table, column, data)) return;
+
+        var query = "INSERT INTO %s(%s, %s) VALUES(?, %s)".formatted(table, column, selected, String.join(", ", Collections.nCopies(values.length, "?")));
+        var statement = prepareStatement(getConnection(), query, values);
+
+        statement.executeUpdate();
+        statement.close();
     }
 
     @Override
+    @SneakyThrows
+    public void remove(String table, String logic, String column, String data) {
+        if (!is(table, column, data)) return;
+
+        var query = "DELETE FROM %s WHERE %s %s ?".formatted(table, column, logic);
+        var statement = prepareStatement(getConnection(), query, data);
+
+        statement.executeUpdate();
+        statement.close();
+    }
+
+    @Override
+    @SneakyThrows
     public Object get(String table, String selected, String logic, String column, String data) {
-        return executeQuery(getConnection(), "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic), e -> e.getObject(selected), data);
+        var query = "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic);
+        var statement = prepareStatement(getConnection(), query, data);
+        var resultSet = statement.executeQuery();
+        if (!resultSet.next()) return null;
+
+        var result = resultSet.getObject(selected);
+
+        statement.close();
+        resultSet.close();
+
+        return result;
     }
 
     @Override
+    @SneakyThrows
+    public String getString(String table, String selected, String logic, String column, String data) {
+        var query = "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic);
+        var statement = prepareStatement(getConnection(), query, data);
+        var resultSet = statement.executeQuery();
+        if (!resultSet.next()) return null;
+
+        var result = resultSet.getString(selected);
+
+        statement.close();
+        resultSet.close();
+
+        return result;
+    }
+
+    @Override
+    @SneakyThrows
     public <T> T get(String table, String selected, String logic, String column, String data, ClassHandler<T> handler) {
         boolean equals = column == null || column.isEmpty() || logic == null || logic.isEmpty();
-        return executeQuery(getConnection(), equals ? "SELECT %s FROM %s WHERE 1".formatted(selected, table) : "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic), handler, equals ? new Object[0] : new Object[]{data});
+        var query = equals ? "SELECT %s FROM %s WHERE 1".formatted(selected, table) : "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic);
+        var statement = prepareStatement(getConnection(), query, equals ? new Object[0] : new Object[]{ data });
+        var resultSet = statement.executeQuery();
+        if (!resultSet.next()) return null;
+
+        var result = handler.consume(resultSet);
+
+        statement.close();
+        resultSet.close();
+
+        return result;
     }
 
     @Override
+    @SneakyThrows
     public List<Object> getList(String table, String selected, String logic, String column, String data) {
-        return executeQueryList(getConnection(), "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic), e -> e.getObject(selected), data);
+        var query = "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic);
+        var statement = prepareStatement(getConnection(), query, data);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            List<Object> result = new ArrayList<>();
+            while (resultSet.next()) {
+                result.add(resultSet.getObject(selected));
+            }
+
+            statement.close();
+            resultSet.close();
+
+            return result;
+        }
     }
 
     @Override
+    @SneakyThrows
+    public List<String> getStringList(String table, String selected, String logic, String column, String data) {
+        var query = "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic);
+        var statement = prepareStatement(getConnection(), query, data);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            List<String> result = new ArrayList<>();
+            while (resultSet.next()) {
+                result.add(resultSet.getString(selected));
+            }
+
+            statement.close();
+            resultSet.close();
+
+            return result;
+        }
+    }
+
+    @Override
+    @SneakyThrows
     public <T> List<T> getList(String table, String selected, String logic, String column, String data, ClassHandler<T> handler) {
         boolean equals = column == null || column.isEmpty() || logic == null || logic.isEmpty();
-        return executeQueryList(getConnection(), equals ? "SELECT %s FROM %s WHERE 1".formatted(selected, table) : "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic), handler, equals ? new Object[0] : new Object[]{data});
-    }
-
-    @Override
-    public boolean is(String table) {
-        try (PreparedStatement prepared = prepared(getConnection(), "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")) {
-            prepared.setString(1, table);
-            try (ResultSet res = prepared.executeQuery()) {
-                return res.next();
+        var query = equals ? "SELECT %s FROM %s WHERE 1".formatted(selected, table) : "SELECT %s FROM %s WHERE %s %s ?".formatted(selected, table, column, logic);
+        var statement = prepareStatement(getConnection(), query, equals ? new Object[0] : new Object[]{ data });
+        try (ResultSet resultSet = statement.executeQuery()) {
+            List<T> result = new ArrayList<>();
+            while (resultSet.next()) {
+                result.add(handler.consume(resultSet));
             }
-        } catch (SQLException e) {
-            return false;
+
+            statement.close();
+            resultSet.close();
+
+            return result;
         }
     }
 
     @Override
+    @SneakyThrows
     public boolean is(String table, String column, String data) {
-        try (PreparedStatement prepared = prepared(getConnection(), "SELECT EXISTS(SELECT 1 FROM %s WHERE %s = ?)".formatted(table, column))) {
-            prepared.setString(1, data);
-            try (ResultSet res = prepared.executeQuery()) {
-                if (!res.next()) return false;
-                return res.getInt(1) == 1;
-            }
-        } catch (SQLException e) {
-            return false;
-        }
+        var query = "SELECT * FROM %s WHERE %s = ?".formatted(table, column);
+        var statement = prepareStatement(getConnection(), query, data);
+        var resultSet = statement.executeQuery();
+        var exists = resultSet.next();
+
+        statement.close();
+        resultSet.close();
+
+        return exists;
     }
 
 }
