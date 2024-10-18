@@ -1,31 +1,28 @@
 package io.github.devlone64.MSLib.builder.database.impl.connection;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import io.github.devlone64.MSLib.MSLib;
 import io.github.devlone64.MSLib.builder.database.data.SQLConnection;
+import io.github.devlone64.MSLib.spigot.Spigot;
+import lombok.SneakyThrows;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.DriverManager;
 
-public class MySQLConnection implements SQLConnection {
+public class MySQLConnection extends SQLConnection {
 
-    private final HikariDataSource dataSource;
+    @SneakyThrows
+    public MySQLConnection(String host, String port, String name, String username, String password) {
+        var logger = MSLib.LOGGER;
+        if (isConnection()) return;
 
-    public MySQLConnection(String hostname, String port, String username, String password, String database) {
-        HikariConfig config = new HikariConfig();
-        config.setDriverClassName("com.mysql.jdbc.Driver");
-        config.setJdbcUrl("jdbc:mysql://%s:%s/%s?useUnicode=yes;characterEncoding=utf-8;".formatted(hostname, port, database));
-        config.setUsername(username);
-        config.setPassword(password);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        this.dataSource = new HikariDataSource(config);
-    }
+        try {
+            setConnection(DriverManager.getConnection("jdbc:mysql://%s:%s/%s".formatted(host, port, name), username, password));
+        } catch (Exception exception) {
+            Spigot.disablePlugin(MSLib.INSTANCE);
+            logger.severe("Failed to connect to MySQL server. are the credentials correct?");
+            return;
+        }
 
-    @Override
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+        logger.info("Successfully connected to MySQL.");
     }
 
 }

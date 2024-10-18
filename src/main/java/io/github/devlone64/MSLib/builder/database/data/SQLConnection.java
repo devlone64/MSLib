@@ -1,8 +1,24 @@
 package io.github.devlone64.MSLib.builder.database.data;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
 
-public interface SQLConnection {
-    Connection getConnection() throws SQLException;
+import java.sql.Connection;
+
+@Setter
+@Getter
+public class SQLConnection {
+    private Connection connection;
+
+    @SneakyThrows
+    public void disconnect() {
+        if (!isConnection()) return;
+        this.connection.close();
+    }
+
+    @SneakyThrows
+    public boolean isConnection() {
+        return !(this.connection == null || this.connection.isClosed());
+    }
 }

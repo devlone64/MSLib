@@ -18,13 +18,14 @@ public class MySQLDatabase implements SQLDatabase {
 
     private final MySQLConnection connection;
 
-    public MySQLDatabase(String hostname, String port, String username, String password, String database) {
-        this.connection = new MySQLConnection(hostname, port, username, password, database);
+    public MySQLDatabase(String hostname, String port, String name, String username, String password) {
+        this.connection = new MySQLConnection(hostname, port, name, username, password);
     }
 
     @Override
     public boolean createTable(String table, String columns) {
-        return executeUpdate(getConnection(), "CREATE TABLE IF NOT EXISTS %s (%s)".formatted(table, columns)) != -1;
+        var id = "id INT AUTO_INCREMENT PRIMARY KEY";
+        return executeUpdate(getConnection(), "CREATE TABLE IF NOT EXISTS %s (%s, %s)".formatted(table, id, columns)) != -1;
     }
 
     @Override

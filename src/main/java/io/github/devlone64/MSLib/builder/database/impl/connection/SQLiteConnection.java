@@ -1,28 +1,56 @@
 package io.github.devlone64.MSLib.builder.database.impl.connection;
 
-import io.github.devlone64.MSLib.MSPlugin;
+import io.github.devlone64.MSLib.MSLib;
 import io.github.devlone64.MSLib.builder.database.data.SQLConnection;
-import org.sqlite.SQLiteDataSource;
+import lombok.SneakyThrows;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.DriverManager;
 
-public class SQLiteConnection implements SQLConnection {
+public class SQLiteConnection extends SQLConnection {
 
-    private final SQLiteDataSource dataSource;
-
-    public SQLiteConnection(String filePath) {
-        this.dataSource = new SQLiteDataSource();
-        File pluginFolder = MSPlugin.INSTANCE.getDataFolder();
-        if (!pluginFolder.exists()) pluginFolder.mkdir();
-        File dbFile = new File(pluginFolder, filePath);
-        this.dataSource.setUrl("jdbc:sqlite:" + dbFile.getAbsolutePath());
+    public SQLiteConnection(String fileName) {
+        this(null, fileName);
     }
 
-    @Override
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+    @SneakyThrows
+    public SQLiteConnection(String dir, String fileName) {
+        var logger = MSLib.LOGGER;
+        if (isConnection()) return;
+
+        var dataFolder = MSLib.DATA_FOLDER;
+        if (!dataFolder.exists()) {
+            if (!dataFolder.mkdirs()) {
+                logger.severe("Cloud not create folder to '%s'.".formatted(dataFolder.getPath().replace("\\", "/")));
+            }
+        }
+
+        var dirFolder = dataFolder;
+        if (dir != null && !dir.isEmpty()) {
+            dirFolder = new File(dataFolder, dir);
+            if (!dirFolder.exists()) {
+                if (!dirFolder.mkdirs()) {
+                    logger.severe("Cloud not create folder to '%s'.".formatted(dirFolder.getPath().replace("\\", "/")));
+                }
+            }
+        }
+
+        var dbFile = new File(dirFolder, fileName);
+        if (!dbFile.exists()) {
+            if (!dbFile.createNewFile()) {
+                logger.severe("Cloud not create file to '%s'.".formatted(dbFile.getPath().replace("\\", "/")));
+            }
+        }
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            setConnection(DriverManager.getConnection("jdbc:sqlite:" + dbFile));
+        } catch (ClassNotFoundException e) {
+            logger.severe("Failed to connect to SQLite server.");
+            return;
+        }
+
+        logger.info("Successfully connected to SQLite.");
     }
 
 }

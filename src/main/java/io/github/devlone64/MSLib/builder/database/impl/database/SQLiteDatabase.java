@@ -24,7 +24,8 @@ public class SQLiteDatabase implements SQLDatabase {
 
     @Override
     public boolean createTable(String table, String columns) {
-        return executeUpdate(getConnection(), "CREATE TABLE IF NOT EXISTS %s (%s)".formatted(table, columns)) != -1;
+        var id = "id INTEGER PRIMARY KEY AUTOINCREMENT";
+        return executeUpdate(getConnection(), "CREATE TABLE IF NOT EXISTS %s (%s, %s)".formatted(table, id, columns)) != -1;
     }
 
     @Override

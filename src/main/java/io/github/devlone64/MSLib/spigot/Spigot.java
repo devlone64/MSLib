@@ -5,10 +5,19 @@ import io.github.devlone64.MSLib.command.BaseCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.scheduler.BukkitTask;
 
 public class Spigot {
+
+    public static void enablePlugin(Plugin plugin) {
+        Bukkit.getPluginManager().enablePlugin(plugin);
+    }
+
+    public static void disablePlugin(Plugin plugin) {
+        Bukkit.getPluginManager().disablePlugin(plugin);
+    }
 
     public static void register(BaseCommand... commands) {
         MSPlugin.INSTANCE.getCommandManager().register(commands);
