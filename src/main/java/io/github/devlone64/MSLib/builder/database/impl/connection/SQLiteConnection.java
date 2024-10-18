@@ -47,10 +47,7 @@ public class SQLiteConnection extends SQLConnection {
             setConnection(DriverManager.getConnection("jdbc:sqlite:" + dbFile));
         } catch (ClassNotFoundException e) {
             logger.severe("Failed to connect to SQLite server.");
-            return;
         }
-
-        logger.info("Successfully connected to SQLite.");
     }
 
 }

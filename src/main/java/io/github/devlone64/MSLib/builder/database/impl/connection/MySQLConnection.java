@@ -19,10 +19,7 @@ public class MySQLConnection extends SQLConnection {
         } catch (Exception exception) {
             Spigot.disablePlugin(MSLib.INSTANCE);
             logger.severe("Failed to connect to MySQL server. are the credentials correct?");
-            return;
         }
-
-        logger.info("Successfully connected to MySQL.");
     }
 
 }
