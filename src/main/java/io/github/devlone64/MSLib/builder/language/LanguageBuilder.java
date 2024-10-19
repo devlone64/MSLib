@@ -3,6 +3,7 @@ package io.github.devlone64.MSLib.builder.language;
 import io.github.devlone64.MSLib.MSPlugin;
 import io.github.devlone64.MSLib.builder.config.yaml.YamlConfigBuilder;
 import io.github.devlone64.MSLib.builder.language.data.Language;
+import io.github.devlone64.MSLib.builder.language.storage.CachedLangList;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class LanguageBuilder extends YamlConfigBuilder {
 
     public void addLanguage(Language... languages) {
         for (var language : languages) {
-            getLanguageMap().put(language.getClass(), language);
+            getLanguageMap().put(language.getClass(), CachedLangList.set(language.getName(), language));
         }
     }
 
