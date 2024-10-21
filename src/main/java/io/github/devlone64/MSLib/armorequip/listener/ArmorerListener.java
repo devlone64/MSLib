@@ -23,11 +23,11 @@ import org.bukkit.inventory.ItemStack;
  * @author Arnah
  * @since Jul 30, 2015
  */
-public class ArmorListener implements Listener{
+public class ArmorerListener implements Listener{
 
     private final List<String> blockedMaterials;
 
-    public ArmorListener(List<String> blockedMaterials){
+    public ArmorerListener(List<String> blockedMaterials){
         this.blockedMaterials = blockedMaterials;
     }
     //Event Priority is highest because other plugins might cancel the events before we check.

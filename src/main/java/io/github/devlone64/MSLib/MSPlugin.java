@@ -1,5 +1,8 @@
 package io.github.devlone64.MSLib;
 
+import io.github.devlone64.MSLib.armorequip.XMaterial;
+import io.github.devlone64.MSLib.armorequip.listener.ArmorerListener;
+import io.github.devlone64.MSLib.armorequip.listener.DispenserArmorListener;
 import io.github.devlone64.MSLib.builder.input.InputBuilder;
 import io.github.devlone64.MSLib.builder.inventory.impl.BukkitInventory;
 import io.github.devlone64.MSLib.builder.inventory.impl.CustomInventory;
@@ -59,6 +62,8 @@ public class MSPlugin extends JavaPlugin implements Listener {
         }
 
         Spigot.register(this);
+        Spigot.register(new DispenserArmorListener());
+        Spigot.register(new ArmorerListener(XMaterial.getBlockedMaterials()));
         onStart();
     }
 

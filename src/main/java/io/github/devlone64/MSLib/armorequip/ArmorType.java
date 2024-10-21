@@ -1,6 +1,6 @@
 package io.github.devlone64.MSLib.armorequip;
 
-import io.github.devlone64.MSLib.armorequip.listener.ArmorListener;
+import io.github.devlone64.MSLib.armorequip.listener.ArmorerListener;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -24,7 +24,7 @@ public enum ArmorType{
      * @return The parsed ArmorType, or null if not found.
      */
     public static ArmorType matchType(final ItemStack itemStack){
-        if(ArmorListener.isAirOrNull(itemStack)) return null;
+        if(ArmorerListener.isAirOrNull(itemStack)) return null;
         String type = itemStack.getType().name();
         if(type.endsWith("_HELMET") || type.endsWith("_SKULL") || type.endsWith("_HEAD")) return HELMET;
         else if(type.endsWith("_CHESTPLATE") || type.equals("ELYTRA")) return CHESTPLATE;
