@@ -9,10 +9,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
@@ -37,6 +34,13 @@ public class ItemBuilder {
 
     public ItemBuilder setAmount(int amount) {
         this.item.setAmount(amount);
+        return this;
+    }
+
+    public ItemBuilder setDamage(int damage) {
+        var meta = (Damageable) this.item.getItemMeta();
+        if (meta != null) meta.setDamage(-damage);
+        this.item.setItemMeta(meta);
         return this;
     }
 

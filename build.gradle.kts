@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.devlone64"
-version = "1.3.3"
+version = "1.3.4"
 
 repositories {
     mavenCentral()
@@ -27,7 +27,6 @@ dependencies {
     implementation("org.spongepowered", "configurate-yaml", "4.1.2")
 
     compileOnly("com.github.MilkBowl", "VaultAPI", "1.7")
-    compileOnly("de.tr7zw", "item-nbt-api-plugin", "2.13.2")
     compileOnly("com.github.LoneDev6", "API-ItemsAdder", "3.6.1")
 
     compileOnly("net.kyori", "adventure-api", "4.13.0")
